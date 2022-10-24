@@ -3,13 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use App\Models\Post;
 use App\Models\Comment;
-// use App\Http\Controllers\DB;
-use DB;
 
-class PostController extends Controller
+class CommentController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,9 +15,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::all();
-        return view('posts',compact('posts'));
-
+        $comments = Comment::all();
+        return view('comment.index', compact('comments'));
     }
 
     /**
@@ -30,7 +26,8 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        $posts = Post::all();
+        return view('comment.create', compact('posts'));
     }
 
     /**
@@ -41,7 +38,10 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $post_id = $request->input('post_id');
+
+        // Comment::create($request->all());
+        return view('comment.create', compact('post_id'));
     }
 
     /**
@@ -52,9 +52,7 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        $post = Post::find($id);
-
-        return view('show', compact('post'));
+        //
     }
 
     /**

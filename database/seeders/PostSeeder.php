@@ -21,20 +21,20 @@ class PostSeeder extends Seeder
             [
                 'id' => 1,
                 'user_id' => 1,
-                'name' => 'shin',
-                'contents' => 'あああああああああああああああ',
+                'name' => 'post1-name',
+                'contents' => 'post1-content1',
             ],
             [
                 'id' => 2,
                 'user_id' => 1,
-                'name' => 'shins',
-                'contents' => 'あああああああああああああああ',
+                'name' => 'post2-name',
+                'contents' => 'post2-content1',
             ],
             [
                 'id' => 3,
                 'user_id' => 1,
-                'name' => 'shin',
-                'contents' => 'あああああああああああああああ',
+                'name' => 'post3-name',
+                'contents' => 'post3-content1',
             ],
         ]);
 
