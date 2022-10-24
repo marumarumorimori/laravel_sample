@@ -24,3 +24,6 @@ Route::get('/posts', [PostController::class, 'index']);
 
 Route::resource('comment', CommentController::class);
 Route::get('/show/{id}', [PostController::class, 'show'])->name('show');
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
