@@ -1,12 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
+@extends('layouts.app')
+
+@section('content')
+<div class="container">
     <p>詳細</p>
 
     <ul>
@@ -16,6 +11,7 @@
     </ul>
 
     <p>コメント</p>
+
     <ul>
         <?php foreach($post->comment as $comment): ?>
         <li>{{ $comment->name }}</li>
@@ -23,5 +19,26 @@
         <?php endforeach; ?>
     </ul>
 
-</body>
-</html>
+    <form method="POST" action="{{route('comment',['id'=>$post->id])}}">
+        @csrf
+        <p>名前<input type="text" name="name" value="{{ old('name') }}"></p>
+        <p>内容<input type="text" name="contents" value="{{ old('contents') }}"></p>
+
+        <input type="submit" value="コメントする">
+    </form>
+
+
+
+    @if(Auth::user()->id == $post->user_id)
+    <div class="editlayout">
+    <a href="{{route('edit',['id'=>$post->id])}}" class="edit">{{ __('編集') }}</a>
+    </div>
+
+    <form method="POST" action="{{route('destroy',['id'=>$post->id])}}" class="delete">
+        @csrf
+        <button type="submit" class="deletebtn">削除</button>
+    </form>
+@endif
+
+</div>
+@endsection

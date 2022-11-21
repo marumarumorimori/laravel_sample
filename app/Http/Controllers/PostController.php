@@ -12,13 +12,27 @@ use DB;
 class PostController extends Controller
 {
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        $posts = Post::all();
+        $posts=DB::table('posts')
+            ->leftJoin('users', 'users.id', '=', 'posts.user_id')
+            ->select('posts.id AS post_id', 'posts.user_id', 'posts.name AS post_name', 'users.name AS user_name','posts.contents AS post_contents')
+            ->get();
+
+        // $posts =Post::all();
         return view('posts',compact('posts'));
 
     }
@@ -30,7 +44,7 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        return view('create');
     }
 
     /**
@@ -41,7 +55,17 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $d=DB::table('posts')
+            ->where('user_id', \Auth::user()->id)
+            ->get();
+
+
+        $post = new Post;
+        $post->user_id = $request->user()->id;
+        $post->name=$request->input('name');
+        $post->contents=$request->input('contents');
+        $post->save();
+        return redirect('posts');
     }
 
     /**
@@ -63,9 +87,12 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request ,$id)
     {
-        //
+        $post = Post::find($request->id);
+        // $posts = \Auth::user()->posts;
+        // $todo=Todo::findOrFail($id);
+        return view('edit' ,compact('post'));
     }
 
     /**
@@ -77,7 +104,12 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $post = Post::find($request->id);
+        $post->user_id = $request->user()->id;
+        $post->name=$request->input('name');
+        $post->contents=$request->input('contents');
+        $post->save();
+        return redirect('posts');
     }
 
     /**
@@ -86,8 +118,34 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request,$id)
     {
-        //
+        $post = Post::find($request->id);
+        $post->delete();
+        return redirect('posts');
     }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function comment(Request $request,$id)
+    {
+        $post = Post::find($request->id);
+        $d=DB::table('comments')
+            ->where('post_id', $post->id)
+            ->get();
+
+        $comment = new Comment;
+        $comment->post_id =  $post->id;
+        $comment->name=$request->input('name');
+        $comment->contents=$request->input('contents');
+        $comment->save();
+
+        return redirect('show/'.$id);
+    }
+
+
 }
